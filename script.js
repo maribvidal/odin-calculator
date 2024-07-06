@@ -24,26 +24,23 @@ function isNumber(value) {return typeof value === 'number';}
 
 //* Utilty: returns an array with the 3 elements of the operation, or null
 function checkOperation() {
-    calcOperator = calcDisplayValue.split('').find(op => OPERATORS.includes(op));
+    calcOperator = OPERATORS[OPERATORS_IDS.findIndex(name => name === calcOperator)];
     if (calcOperator == undefined) {
         return null;
     }
 
-    const operands = calcDisplayValue.split(/[-+*%/]/);
-    calcFirstValue = +operands[0];
-    if (calcOperator !== '%')
-        calcSecondValue = +operands[1];
+    calcSecondValue = Number(calcDisplayValue);
     return true;
 }
 
 function operate(op, a, b) {
     if (OPERATORS.includes(op)) {
         switch(op) {
-            case "+": return Math.round(addition(a, b));
-            case "-": return Math.round(subtract(a, b));
-            case "*": return Math.round(multiply(a, b));
-            case "/": return Math.round(divide(a, b));
-            case "%": return percentage(a);
+            case "+": return addition(a, b).toFixed(1);
+            case "-": return subtract(a, b).toFixed(1);
+            case "*": return multiply(a, b).toFixed(1);
+            case "/": return divide(a, b).toFixed(1);
+            case "%": return percentage(a).toFixed(1);
             default: break;
         }
     }
@@ -101,6 +98,10 @@ calculator.addEventListener("click", (event) => {
             if (NUMBERS.includes(target.id)) {
                 //Si antes no había ningún número puesto...
                 if (isNumberNeeded) {isNumberNeeded = false;}
+                if (calcFirstValue !== 0 && calcSecondValue === 0) {
+                    calcDisplayValue = '';
+                    calcSecondValue = calcDisplayValue;
+                }
                 calcDisplayValue += target.textContent;
             }
 
@@ -108,12 +109,53 @@ calculator.addEventListener("click", (event) => {
             if (OPERATORS_IDS.includes(target.id)) {
                 //Si y solo si ya hay un número
                 if (!isNumberNeeded) {
-                    calcDisplayValue += target.textContent;
+                    calcFirstValue = Number(calcDisplayValue);
+                    calcOperator = target.id;
                     isNumberNeeded = true;
                 }
             }
         }
     }
 
+    showResultText();
+});
+
+// Keyboard support
+
+document.addEventListener("keydown", (event) => {
+    const keyName = event.key;
+
+    if (keyName == 0 || keyName == 1 || keyName == 2 || keyName == 3 || keyName == 4 || keyName == 5 || keyName == 6 || keyName == 7 || keyName == 8 || keyName == 9) {
+        if (isNumberNeeded) {isNumberNeeded = false;}
+        if (calcFirstValue !== 0 && calcSecondValue === 0) {
+            calcDisplayValue = '';
+            calcSecondValue = calcDisplayValue;
+        }
+        calcDisplayValue += keyName;
+    } else if (OPERATORS.includes(keyName)) {
+        if (!isNumberNeeded) {
+            calcFirstValue = Number(calcDisplayValue);
+            calcOperator = target.id;
+            isNumberNeeded = true;
+        }
+    } else if (keyName == 'Backspace') {
+        //Revisar si calcDisplayValue no está vacío
+        if (calcDisplayValue.length > 0) {
+            calcDisplayValue = calcDisplayValue.substring(0, calcDisplayValue.length - 1);
+            //Revisar si el último carácter ahora es un operador
+                if (OPERATORS.includes(calcDisplayValue.substring(calcDisplayValue.length - 1, calcDisplayValue.length))) {
+                    isNumberNeeded = true;
+                }
+        }
+    } else if (keyName == '=') {
+        if (checkOperation()) {
+            calcPrevResult = operate(calcOperator, calcFirstValue, calcSecondValue);
+            calcDisplayValue = calcPrevResult;
+            isNumberNeeded = false;
+            calcOperator = '';
+            calcFirstValue = 0;
+            calcSecondValue = 0;
+        }
+    }
     showResultText();
 });
