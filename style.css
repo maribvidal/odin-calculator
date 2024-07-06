@@ -1,0 +1,82 @@
+* {
+    box-sizing: border-box;
+    --opacity: 0.5;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+}
+
+html {
+    margin: 0;
+}
+
+body {
+    background: rgb(167, 252, 255);
+
+    display: flex;
+    justify-content: center;
+}
+
+/* Calculadora - contenedor principal */
+
+.calculator {
+    padding: 16px;
+    margin-top: 64px;
+
+    width: 500px;
+    height: 800px;
+    
+    background-color: rgb(125, 125, 125, var(--opacity));
+    
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* Calculadora - los demas botones */
+
+.calculator div {
+    flex-basis: 100px;
+    background-color: black;
+    flex-grow: 4;
+    flex-shrink: 4;
+}
+
+.calculator .touchable, #result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 16px;
+}
+
+#divide, #multiply, #subtract, #add, #equal {
+    background-color: rgb(255, 200, 0);
+}
+
+#result {
+    flex-basis: 400px;
+    flex-shrink: 1;
+    text-align: right;
+    font-size: 32px;
+    font-weight: bold;
+
+    flex-direction: column;
+    min-height: 0;
+    overflow: auto;
+}
+
+#zero {
+    flex-basis: 224px;
+    flex-shrink: 2;
+}
+
+/* Un poco de dinamismo */
+
+.calculator .touchable:hover, #divide:hover, #multiply:hover, #subtract:hover, #add:hover, #equal:hover {
+    background-color: rgba(158, 158, 55, 1);
+}
+
+/* Primera fila */
+
+/* Segunda fila */
